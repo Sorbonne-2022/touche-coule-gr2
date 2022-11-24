@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import './Ship.sol';
-import 'hardhat/console.sol';
+import "./Ship.sol";
+import "../node_modules/hardhat/console.sol";
 
 struct Game {
   uint height;
@@ -37,14 +37,16 @@ contract Main {
   }
 
   function register(address ship) external {
-    require(count[msg.sender] < 2, 'Only two ships');
-    require(used[ship], 'Ship alread on the board');
-    require(index <= game.height * game.width, 'Too much ship on board');
+    require(count[msg.sender] < 2, "Only two ships");
+    require(!used[ship], "Ship already on the board");
+    require(index <= game.height * game.width, "Too much ship on board");
+    console.log("Sender", msg.sender, "index", index);
     count[msg.sender] += 1;
     ships[index] = ship;
     owners[index] = msg.sender;
     (uint x, uint y) = placeShip(index);
     Ship(ships[index]).update(x, y);
+    used[ship] = true;
     emit Registered(index, msg.sender, x, y);
     index += 1;
   }
@@ -80,7 +82,7 @@ contract Main {
       } else {
         uint newPlace = (x * game.width) + y + 1;
         x = newPlace % game.width;
-        y = newPlace / game.width;
+        y = newPlace / game.width % game.height;
       }
     }
     return (x, y);

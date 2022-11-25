@@ -136,8 +136,6 @@ const Buttons = ({ wallet }: { wallet: ReturnType<typeof useWallet> }) => {
   let i = 0; 
   return (
     <div style={{ display: 'flex', gap: 5, padding: 5 }}>
-      <button onClick={next}>Register</button>
-      <button onClick={next}>Turn</button>
       <button onClick={async () => {
        let address = main.FirstShip()
        try{
@@ -146,7 +144,8 @@ const Buttons = ({ wallet }: { wallet: ReturnType<typeof useWallet> }) => {
           let address = main.SecondShip()
           await wallet?.contract.register(address!)
        }
-      }}>Test</button>
+      }}>Register</button>
+      <button onClick={next}>Turn</button>
     </div>
   )
 }
@@ -170,7 +169,7 @@ export const App = () => {
           /**console.log("I want know x position:" + x); */
           const y = Math.floor(index / board?.[0]?.length ?? 0)
           /**console.log("I want know the y position:" + y);*/
-          const background = board?.[x]?.[y] ? 'url("https://raw.githubusercontent.com/Sorbonne-2022/touche-coule-gr2/main/public/ship.png?fbclid=IwAR0yrG0yhc-rePFdKkki2bCNcN1EQ8MW5dQEodqCvfeBTAj3vhJEZIPO5os")' : undefined
+          const background = board?.[x]?.[y] ? 'red' : undefined
           return (
             <div key={index} className={styles.cell} style={{ background }} />
           )

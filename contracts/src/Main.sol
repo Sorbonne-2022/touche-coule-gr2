@@ -15,7 +15,7 @@ struct Game {
 contract Main {
   Game private game;
   uint private index;
-  mapping(address => bool) private used;
+  mapping(address => mapping(address => bool)) private used;
   mapping(uint => address) private ships;
   mapping(uint => address) private owners;
   mapping(address => uint) private count;
@@ -38,15 +38,15 @@ contract Main {
 
   function register(address ship) external {
     require(count[msg.sender] < 2, "Only two ships");
-    require(!used[ship], "Ship already on the board");
+    require(!used[msg.sender][ship], "Ship already on the board");
     require(index <= game.height * game.width, "Too much ship on board");
     console.log("Sender", msg.sender, "index", index);
     count[msg.sender] += 1;
     ships[index] = ship;
     owners[index] = msg.sender;
     (uint x, uint y) = placeShip(index);
-    Ship(ships[index]).update(x, y);
-    used[ship] = true;
+    Ship(ships[index]).update(x, y, index);
+    used[msg.sender][ship] = true;
     emit Registered(index, msg.sender, x, y);
     index += 1;
   }
@@ -54,9 +54,11 @@ contract Main {
   function turn() external {
     bool[] memory touched = new bool[](index);
     for (uint i = 1; i < index; i++) {
+      console.log("Index Turn:", i);
       if (game.xs[i] < 0) continue;
       Ship ship = Ship(ships[i]);
-      (uint x, uint y) = ship.fire();
+      console.log("Log", address(ship), i);
+      (uint x, uint y) = ship.fire(game.width, game.height, i);
       if (game.board[x][y] > 0) {
         touched[game.board[x][y]] = true;
       }

@@ -59,6 +59,8 @@ const useWallet = () => {
 type Ship = {}
 const useBoard = (wallet: ReturnType<typeof useWallet>) => {
   const [board, setBoard] = useState<(null | Ship)[][]>([])
+  const [owners, setOwners] = useState<any>([])
+
   useAffect(async () => {
     if (!wallet) return
     const onRegistered = (
@@ -68,6 +70,13 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
       y: BigNumber
     ) => {
       console.log('onRegistered')
+      setOwners(prev => {
+        if(prev.find(p => p.owner === owner)) return prev
+        return [...prev, {
+        owner,
+        color: generateHex()
+      }]}
+      )
       setBoard(board => {
         return board.map((x_, index) => {
           if (index !== x.toNumber()) return x_
@@ -87,7 +96,7 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
           if (index !== x) return x_
           return x_.map((y_, indey) => {
             if (indey !== y) return y_
-            return null
+            return -1
           })
         })
       })
@@ -105,6 +114,7 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
       registeredEvent.forEach(event => {
         const { index, owner, x, y } = event.args
         onRegistered(index, owner, x, y)
+        console.log("Owner: " + owner)
       })
     }
     const updateTouched = async () => {
@@ -126,14 +136,34 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
       wallet.contract.off('Touched', onTouched)
     }
   }, [wallet])
-  return board
+  return [board, owners]
+}
+
+const generateHex = () => {
+  const letters = "0123456789ABCDEF";
+  
+  let color = '#';
+
+  for (var i = 0; i < 6; i++)
+     color += letters[(Math.floor(Math.random() * 16))];
+
+  return color
 }
 
 const Buttons = ({ wallet }: { wallet: ReturnType<typeof useWallet> }) => {
   const next = () => wallet?.contract.turn()
+  let i = 0; 
   return (
     <div style={{ display: 'flex', gap: 5, padding: 5 }}>
-      <button onClick={() => {}}>Register</button>
+      <button onClick={async () => {
+       let address = main.FirstShip()
+       try{
+          await wallet?.contract.register(address!)
+       }catch (e){
+          let address = main.SecondShip()
+          await wallet?.contract.register(address!)
+       }
+      }}>Register</button>
       <button onClick={next}>Turn</button>
     </div>
   )
@@ -142,7 +172,7 @@ const Buttons = ({ wallet }: { wallet: ReturnType<typeof useWallet> }) => {
 const CELLS = new Array(100 * 100)
 export const App = () => {
   const wallet = useWallet()
-  const board = useBoard(wallet)
+  const [board, owners] = useBoard(wallet)
   const size = useWindowSize()
   const st = {
     ...size,
@@ -155,8 +185,10 @@ export const App = () => {
       <div className={styles.grid} style={st}>
         {CELLS.fill(0).map((_, index) => {
           const x = Math.floor(index % board?.length ?? 0)
+          /**console.log("I want know x position:" + x); */
           const y = Math.floor(index / board?.[0]?.length ?? 0)
-          const background = board?.[x]?.[y] ? 'red' : undefined
+          /**console.log("I want know the y position:" + y);*/
+          const background = board?.[x]?.[y] === -1 ? 'black' :(board?.[x]?.[y] ? owners.find(o => o.owner === board?.[x]?.[y].owner).color : undefined)
           return (
             <div key={index} className={styles.cell} style={{ background }} />
           )

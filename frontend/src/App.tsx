@@ -60,6 +60,7 @@ type Ship = {}
 const useBoard = (wallet: ReturnType<typeof useWallet>) => {
   const [board, setBoard] = useState<(null | Ship)[][]>([])
   const [owners, setOwners] = useState<any>([])
+  const[winner, getWinner] = useState<any>(null)
 
   useAffect(async () => {
     if (!wallet) return
@@ -101,6 +102,9 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
         })
       })
     }
+    const onWinner = (owner: any) => {
+      getWinner(owner);
+    }
     const updateSize = async () => {
       const [event] = await wallet.contract.queryFilter('Size', 0)
       const width = event.args.width.toNumber()
@@ -124,16 +128,26 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
         onTouched(ship, x, y)
       })
     }
+    const updateWinner = async () => {
+      const winnerEvent = await wallet.contract.queryFilter('Winner', 0)
+      winnerEvent.forEach(event => {
+        const {owner} = event.args
+        onWinner(owner)
+      })
+    }
     await updateSize()
     await updateRegistered()
     await updateTouched()
+    await updateWinner()
     console.log('Registering')
     wallet.contract.on('Registered', onRegistered)
     wallet.contract.on('Touched', onTouched)
+    wallet.contract.on('Winner', onWinner)
     return () => {
       console.log('Unregistering')
       wallet.contract.off('Registered', onRegistered)
       wallet.contract.off('Touched', onTouched)
+      wallet.contract.on('Winner', onWinner)
     }
   }, [wallet])
   return [board, owners]

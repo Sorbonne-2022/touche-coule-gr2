@@ -1,3 +1,32 @@
+## Documentation
+
+Here are some related information:
+
+[1. Group](#group)
+
+[2. Description](#touché-coulé)
+
+[3. Installation](#installation)
+
+[4. Some setup](#some-setup)
+
+[5. Run App](#run-app)
+
+[6. Subject](#subject)
+
+[7. Smart Contract](#smart-contract)
+
+[8. Bonus](#bonus)
+
+[9. Tutorial](#tutorial)
+# Group:
+
+**1. Manh-Trung BUI**
+
+**2. Astrid PASSOT**
+
+**3. Lizeth PAREDES**
+
 # Touché Coulé
 
 Welcome to the DAAR project. The idea will be to implement a "Touché Coulé" (Battleship) game
@@ -30,7 +59,7 @@ Now you can connect Metamask to the blockchain. To do this, add a network by cli
 
 Once you have done it, you’re connected to the HardHat blockchain!
 
-# Installation
+# Run App
 
 Install the dependencies.
 
@@ -71,3 +100,34 @@ Pro tip: you can automate the ship deployment and registering with the deploymen
 # Bonus
 
 You can add some features to the project as a bonus if you want to dive more into the project. For example, you could implement custom ships (with different ships), you can allow them to move, or to discuss with each other. Feel free to add whatever you feel useful. Every new features will be taken into account.
+
+# Tutorial
+
+1. After finishing setup and importing accounts into MetaMask, choose an account to create ships.
+
+![Ganache Config](public/tutorial1.png)
+
+![Ganache Config](public/tutorial2.png)
+
+Repeate one time to create a second ship for first player 
+
+2. Change the account to create ships for second player 
+
+![Ganache Config](public/tutorial3.png)
+
+Repeate all steps to create 2 ships for players 
+
+3. You can create as many player for your game just repeat all steps above but to start the game you have to create at least 2 players.
+Each player will have a different color of ship. 
+
+4. Let's make a fire, click on button Turn. 
+
+![Ganache Config](public/tutorial4.png)
+
+All the ship will fire at the same time. 2 ship in same team can't fire at each other. 
+The last fire of a ship will be not the same position with new fire. 
+
+5. Destroy all ship of other players
+
+
+

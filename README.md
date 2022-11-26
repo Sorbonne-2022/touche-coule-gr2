@@ -126,6 +126,7 @@ Each player will have a different color of ship.
 
 All the ship will fire at the same time. 2 ship in same team can't fire at each other. 
 The last fire of a ship will be not the same position with new fire. 
+The block fire will display as black block. 
 
 5. Destroy all ship of other players
 

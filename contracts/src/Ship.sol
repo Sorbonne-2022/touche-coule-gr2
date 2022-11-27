@@ -52,7 +52,7 @@ contract FirstShip is Ship{
     console.log("Index :", _index, _owner);
     for(uint i = 0; i < ship_pos[_index].length; i++){
       // Generate any random number ranging from 1-49
-      uint random = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty, msg.sender))) % 50;
+      uint random = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty, _owner))) % 50;
       console.log("Random number :", random, !last_fire[_index].first_fire);
       // (+) operator for case when x or y == 0
       // (i + ..) operator for  case when two ship have same position like (35,35)
@@ -86,6 +86,8 @@ contract FirstShip is Ship{
 
 
 contract SecondShip is Ship{
+  /**
+   */
 
   function get_cur_pos(uint _index) override(Ship) public returns (uint, uint) {
       uint x = ship_pos[_index][0].current_x;
@@ -108,7 +110,7 @@ contract SecondShip is Ship{
     console.log("Index :", _index, _owner);
     for(uint i = 0; i < ship_pos[_index].length; i++){
       // Generate any random number ranging from 1-49
-      uint random = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty, msg.sender))) % 50;
+      uint random = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty, _owner))) % 50;
       console.log("Random number :", random, !last_fire[_index].first_fire);
       // (+) operator for case when x or y == 0
       // (i + ..) operator for  case when two ship have same position like (35,35)

@@ -49,30 +49,31 @@ contract FirstShip is Ship{
     uint x;
     uint y;
     
-    console.log("Index Ship and Owner :", _index, _owner);
+    console.log("Index :", _index, _owner);
     for(uint i = 0; i < ship_pos[_index].length; i++){
-      // Generate any random number ranging from 100-599
-      uint random = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty, msg.sender))) % 500;
-      random = random + 100;
-      console.log("Random number :", random, "Is first fire?", !last_fire[_index].first_fire);
+      // Generate any random number ranging from 1-49
+      uint random = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty, msg.sender))) % 50;
+      console.log("Random number :", random, !last_fire[_index].first_fire);
+      // (+) operator for case when x or y == 0
+      // (i + ..) operator for  case when two ship have same position like (35,35)
       if(!last_fire[_index].first_fire){
-        x = (ship_pos[_index][i].current_x + random) % width;
-        y = (ship_pos[_index][i].current_y + random) % height;
+        x = (ship_pos[_index][i].current_x + random  + (i + 1)) % width;
+        y = (ship_pos[_index][i].current_y + random + i) % height;
         last_fire[_index]._x = x;
         last_fire[_index]._y = y;
         last_fire[_index].first_fire = true;
         console.log("Set a first fire", last_fire[_index]._x, last_fire[_index]._y, last_fire[_index].first_fire);
       }else{
         console.log("Get last fire position", last_fire[_index]._x, last_fire[_index]._y, last_fire[_index].first_fire);
-        x = (last_fire[_index]._x + random) % width;
-        y = (last_fire[_index]._y + random) % height;
+        x = (last_fire[_index]._x + random + (i + 1)) % width;
+        y = (last_fire[_index]._y + random + i) % height;
         last_fire[_index]._x = x;
         last_fire[_index]._y = y;
         console.log("Fire", last_fire[_index]._x, last_fire[_index]._y, last_fire[_index].first_fire);
       }
     }
-    console.log("Block Fire", x, y);
-    return (last_fire[_index]._x, last_fire[_index]._y);
+    console.log("Block Fire", last_fire[_index]._x, last_fire[_index]._y);
+    return (x, y);
   }
 
   function place(uint width, uint height) override(Ship) public returns (uint, uint) { 
@@ -109,24 +110,26 @@ contract SecondShip is Ship{
       // Generate any random number ranging from 1-49
       uint random = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty, msg.sender))) % 50;
       console.log("Random number :", random, !last_fire[_index].first_fire);
+      // (+) operator for case when x or y == 0
+      // (i + ..) operator for  case when two ship have same position like (35,35)
       if(!last_fire[_index].first_fire){
-        x = (ship_pos[_index][i].current_x + random) % width;
-        y = (ship_pos[_index][i].current_y + random) % height;
+        x = (ship_pos[_index][i].current_x + random  + (i + 1)) % width;
+        y = (ship_pos[_index][i].current_y + random + i) % height;
         last_fire[_index]._x = x;
         last_fire[_index]._y = y;
         last_fire[_index].first_fire = true;
         console.log("Set a first fire", last_fire[_index]._x, last_fire[_index]._y, last_fire[_index].first_fire);
       }else{
         console.log("Get last fire position", last_fire[_index]._x, last_fire[_index]._y, last_fire[_index].first_fire);
-        x = (last_fire[_index]._x + random) % width;
-        y = (last_fire[_index]._y + random) % height;
+        x = (last_fire[_index]._x + random + (i + 1)) % width;
+        y = (last_fire[_index]._y + random + i) % height;
         last_fire[_index]._x = x;
         last_fire[_index]._y = y;
         console.log("Fire", last_fire[_index]._x, last_fire[_index]._y, last_fire[_index].first_fire);
       }
     }
     console.log("Block Fire", last_fire[_index]._x, last_fire[_index]._y);
-    return (last_fire[_index]._x, last_fire[_index]._y);
+    return (x, y);
   }
 
   function place(uint width, uint height) override(Ship) public returns (uint, uint) { 
